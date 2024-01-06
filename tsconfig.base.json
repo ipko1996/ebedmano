@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@ebedmano/menu-crud": ["libs/menu-crud/src/index.ts"],
       "@ebedmano/prisma-client": ["libs/prisma-client/src/index.ts"]
     }
   },
