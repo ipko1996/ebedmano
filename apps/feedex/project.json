@@ -1,0 +1,53 @@
+{
+  "name": "feedex",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/feedex/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/feedex",
+        "main": "apps/feedex/src/main.ts",
+        "tsConfig": "apps/feedex/tsconfig.app.json",
+        "assets": ["apps/feedex/src/assets"],
+        "webpackConfig": "apps/feedex/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "feedex:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "feedex:build:development"
+        },
+        "production": {
+          "buildTarget": "feedex:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/feedex/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
