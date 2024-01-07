@@ -1,0 +1,30 @@
+{
+  "name": "spices",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/spices/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/spices",
+        "main": "libs/spices/src/index.ts",
+        "tsConfig": "libs/spices/tsconfig.lib.json",
+        "assets": ["libs/spices/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/spices/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

@@ -44,10 +44,12 @@
       },
       "configurations": {
         "development": {
-          "buildTarget": "farmer:build:development"
+          "buildTarget": "farmer:build:development",
+          "runBuildTargetDependencies": true
         },
         "production": {
-          "buildTarget": "farmer:build:production"
+          "buildTarget": "farmer:build:production",
+          "runBuildTargetDependencies": true
         }
       }
     },

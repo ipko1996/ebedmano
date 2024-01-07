@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
-import { prisma } from '@ebedmano/prisma-client';
+import { prismaClient } from '@ebedmano/prisma-client';
 
 export const menuCrud: Router = Router();
 
 menuCrud.get('/', async (req: Request, res: Response) => {
-  const menus = await prisma.restaurant.findMany();
+  const menus = await prismaClient.restaurant.findMany();
   res.send({ message: 'Welcome to menu-crud!', menus });
 });
 

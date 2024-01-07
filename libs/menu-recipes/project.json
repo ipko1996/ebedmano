@@ -1,0 +1,30 @@
+{
+  "name": "menu-recipes",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/menu-recipes/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/menu-recipes",
+        "main": "libs/menu-recipes/src/index.ts",
+        "tsConfig": "libs/menu-recipes/tsconfig.lib.json",
+        "assets": ["libs/menu-recipes/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/menu-recipes/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

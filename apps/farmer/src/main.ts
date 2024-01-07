@@ -1,1 +1,5 @@
-console.log('Hello World');
+import { getCurrentOfferFromZona } from '@ebedmano/menu-recipes';
+
+(async () => {
+  await getCurrentOfferFromZona();
+})();

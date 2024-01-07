@@ -7,6 +7,7 @@ import express from 'express';
 import * as path from 'path';
 
 import { menuCrud } from '@ebedmano/menu-crud';
+import { updateCrud } from '@ebedmano/update';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api/menu', menuCrud);
+app.use('/api/update', updateCrud);
 
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {

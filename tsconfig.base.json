@@ -16,7 +16,10 @@
     "baseUrl": ".",
     "paths": {
       "@ebedmano/menu-crud": ["libs/menu-crud/src/index.ts"],
-      "@ebedmano/prisma-client": ["libs/prisma-client/src/index.ts"]
+      "@ebedmano/menu-recipes": ["libs/menu-recipes/src/index.ts"],
+      "@ebedmano/prisma-client": ["libs/prisma-client/src/index.ts"],
+      "@ebedmano/spices": ["libs/spices/src/index.ts"],
+      "@ebedmano/update": ["libs/update/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
