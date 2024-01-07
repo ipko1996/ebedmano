@@ -1,16 +1,6 @@
-import * as vesz from './vesz';
-import { RESTAURANT, ISomething, VESZPREM } from '../interfaces';
+import { RESTAURANT, IWaiter, restaurantNameToEventMap } from '../staff';
 
-type RestaurantToEvent = Record<RESTAURANT, ISomething>;
-
-const restaurantNameToEventMap: RestaurantToEvent = {
-  [VESZPREM.ZONA]: vesz.vesz_zona.something,
-  [VESZPREM.METISZ]: vesz.vesz_metisz.something,
-  [VESZPREM.MARICA]: vesz.vesz_marica.something,
-  //[KOSZEG.KEKFENY]: vesz.vesz_zona.something,
-};
-
-const toEventMapFor = (restaurant: RESTAURANT): ISomething | string =>
+const toEventMapFor = (restaurant: RESTAURANT): IWaiter | string =>
   restaurantNameToEventMap[restaurant] ?? 'No such restaurant';
 
 export async function getCurrentOfferFor(restaurant: string): Promise<string> {

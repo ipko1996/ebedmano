@@ -5,8 +5,6 @@
 // import axios from 'axios';
 // import { writeFileSync } from 'fs';
 
-import { ISomething } from '../../interfaces';
-
 // const Zona = {
 //   name: 'Zona',
 //   city: 'Veszprém',
@@ -52,8 +50,6 @@ import { ISomething } from '../../interfaces';
 //   return [];
 // };
 
-export const something: ISomething = {
-  getCurrentOffer: () => {
-    return 'zona';
-  },
+export const getCurrentOffer = () => {
+  return 'zona';
 };

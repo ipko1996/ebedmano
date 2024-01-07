@@ -1,7 +1,3 @@
-import { ISomething } from '../../interfaces';
-
-export const something: ISomething = {
-  getCurrentOffer: () => {
-    return 'marica';
-  },
+export const getCurrentOffer = () => {
+  return 'marica';
 };
