@@ -8,18 +8,18 @@ import { getCurrentOfferFor } from '@ebedmano/recipes';
  * This will call a function which will decide
  * if it has to start looking for a new offer
  */
-const job = new CronJob(
-  '* * * * * *', // cronTime
-  function () {
-    console.log('You will see this message every second');
-  }, // onTick
-  null, // onComplete
-  true, // start
-  'America/Los_Angeles' // timeZone
-);
+// const job = new CronJob(
+//   '* * * * * *', // cronTime
+//   function () {
+//     console.log('You will see this message every second');
+//   }, // onTick
+//   null, // onComplete
+//   true, // start
+//   'America/Los_Angeles' // timeZone
+// );
 
-job.start();
+// job.start();
 
 (async () => {
-  await getCurrentOfferFor('asd');
+  await getCurrentOfferFor('VESZ_ZONA');
 })();

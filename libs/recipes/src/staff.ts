@@ -3,7 +3,7 @@ import * as vesz from './lib/vesz';
 type RestaurantToEvent = Record<RESTAURANT, IWaiter>;
 
 export interface IWaiter {
-  getCurrentOffer: () => string;
+  getCurrentOffer: () => Promise<string>;
 }
 
 export type RESTAURANT = VESZPREM | KOSZEG;

@@ -1,3 +1,3 @@
-export const getCurrentOffer = () => {
+export const getCurrentOffer = async () => {
   return 'metisz';
 };
