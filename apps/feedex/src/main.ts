@@ -6,7 +6,7 @@
 import express from 'express';
 import * as path from 'path';
 
-import { menuCrud } from '@ebedmano/menu-crud';
+import { menuCrud } from '@ebedmano/menu';
 import { updateCrud } from '@ebedmano/update';
 
 const app = express();

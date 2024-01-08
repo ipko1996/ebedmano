@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getCurrentOfferFor } from '@ebedmano/menu-recipes';
+import { getCurrentOfferFor } from '@ebedmano/recipes';
 
 export const updateCrud: Router = Router();
 

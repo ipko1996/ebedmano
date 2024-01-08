@@ -1,0 +1,30 @@
+{
+  "name": "kitchenware",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/kitchenware/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/kitchenware",
+        "main": "libs/kitchenware/src/index.ts",
+        "tsConfig": "libs/kitchenware/tsconfig.lib.json",
+        "assets": ["libs/kitchenware/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/kitchenware/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
