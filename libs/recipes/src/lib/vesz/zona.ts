@@ -60,10 +60,9 @@ const printTableInfo = (
   // Print header row
   let headerRowText = '';
 
-  if (!table.headerRows?.length) return;
-  if (!table.headerRows[0].cells) return;
-  if (!table.bodyRows?.length) return;
-  if (!table.bodyRows[0].cells || !table.bodyRows[1].cells) return;
+  if (!table.headerRows?.[0]?.cells || !table.bodyRows?.length) {
+    return;
+  }
 
   for (const headerCell of table.headerRows[0].cells) {
     if (!headerCell.layout?.textAnchor) continue;
@@ -106,18 +105,24 @@ export const getCurrentOffer = async () => {
   const processedImage = processImage('temp/zona.jpg');
   const { document } = processedImage;
 
-  if (!document) return 'zona';
   if (!document?.pages) return 'zona';
 
   const { text } = document;
   const { pages } = document;
+
   if (!pages.length) return 'zona';
   const page = pages[0];
+
   if (!page.tables?.length) return 'zona';
   const table = page.tables[0];
-  if (!table.headerRows?.length) return 'zona';
-  if (!table.headerRows[0].cells) return 'zona';
-  if (!table.bodyRows?.length) return 'zona';
+
+  if (
+    !table.headerRows?.length ||
+    !table.headerRows[0]?.cells ||
+    !table.bodyRows?.length
+  ) {
+    return 'zona';
+  }
   printTableInfo(table, text as string);
 
   return 'zona';
