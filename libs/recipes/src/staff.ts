@@ -12,7 +12,7 @@
  * for more info see the README.md in libs\recipes\README.md
  */
 
-import * as vesz from './lib/vesz';
+import * as vesz from './lib/veszprem';
 
 type RestaurantToEvent = Record<RESTAURANT, IWaiter>;
 
