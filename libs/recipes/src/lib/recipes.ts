@@ -1,7 +1,4 @@
-import { RESTAURANT, IWaiter, restaurantNameToEventMap } from '../staff';
-
-const toEventMapFor = (restaurant: RESTAURANT): IWaiter | string =>
-  restaurantNameToEventMap[restaurant] ?? 'No such restaurant';
+import { RESTAURANT, toEventMapFor } from '../staff';
 
 export async function getCurrentOfferFor(restaurant: string): Promise<string> {
   const restaurantEnum = toEventMapFor(restaurant as RESTAURANT);
