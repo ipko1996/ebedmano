@@ -1,9 +1,13 @@
+import { Offer } from '@ebedmano/kitchenware';
 import { RESTAURANT, toEventMapFor } from '../staff';
 
-export async function getCurrentOfferFor(restaurant: string): Promise<string> {
+export async function getCurrentOfferFor(
+  restaurant: string
+): Promise<Offer[] | null> {
   const restaurantEnum = toEventMapFor(restaurant as RESTAURANT);
   if (typeof restaurantEnum === 'string') {
-    return restaurantEnum;
+    return null;
   }
-  return await restaurantEnum.getCurrentOffer();
+  const offer = await restaurantEnum.getCurrentOffer();
+  return offer;
 }

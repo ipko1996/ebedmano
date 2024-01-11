@@ -12,12 +12,13 @@
  * for more info see the README.md in libs\recipes\README.md
  */
 
+import { Offer } from '@ebedmano/kitchenware';
 import * as vesz from './lib/veszprem';
 
 type RestaurantToEvent = Record<RESTAURANT, IWaiter>;
 
 export interface IWaiter {
-  getCurrentOffer: () => Promise<string>;
+  getCurrentOffer: () => Promise<Offer[] | null>;
 }
 
 /**

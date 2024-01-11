@@ -5,7 +5,7 @@
 // import axios from 'axios';
 // import { writeFileSync } from 'fs';
 
-import { processImage } from '@ebedmano/kitchenware';
+import { Offer, processImage, weekdays } from '@ebedmano/kitchenware';
 import { google } from '@google-cloud/documentai/build/protos/protos';
 
 // const Zona = {
@@ -101,29 +101,22 @@ const getText = (
   return text.substring(startIndex as number, endIndex as number);
 };
 
-export const getCurrentOffer = async () => {
+export const getCurrentOffer = async (): Promise<Offer[] | null> => {
   const processedImage = processImage('temp/zona.jpg');
   const { document } = processedImage;
 
-  if (!document?.pages) return 'zona';
+  if (!document?.pages) return null;
 
   const { text } = document;
   const { pages } = document;
 
-  if (!pages.length) return 'zona';
+  if (!pages.length) return null;
   const page = pages[0];
 
-  if (!page.tables?.length) return 'zona';
+  if (!page.tables?.length) return null;
   const table = page.tables[0];
 
-  if (
-    !table.headerRows?.length ||
-    !table.headerRows[0]?.cells ||
-    !table.bodyRows?.length
-  ) {
-    return 'zona';
-  }
   printTableInfo(table, text as string);
 
-  return 'zona';
+  return [{ day: weekdays.MONDAY, offer: 'Babgulyás', price: 800 }];
 };
