@@ -18,7 +18,7 @@ import * as vesz from './lib/veszprem';
 type RestaurantToEvent = Record<RESTAURANT, IWaiter>;
 
 export interface IWaiter {
-  getCurrentOffer: () => Promise<Offer[] | null>;
+  getCurrentOffer: () => Promise<Offer[]>;
 }
 
 /**

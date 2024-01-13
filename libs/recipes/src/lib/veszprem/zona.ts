@@ -5,8 +5,9 @@
 // import axios from 'axios';
 // import { writeFileSync } from 'fs';
 
-import { Offer, processImage, weekdays } from '@ebedmano/kitchenware';
+import { Offer, processImage } from '@ebedmano/kitchenware';
 import { google } from '@google-cloud/documentai/build/protos/protos';
+import dayjs from 'dayjs';
 
 // const Zona = {
 //   name: 'Zona',
@@ -53,6 +54,9 @@ import { google } from '@google-cloud/documentai/build/protos/protos';
 //   return [];
 // };
 
+type Line = Array<string>;
+type Lines = Array<Line>;
+
 const printTableInfo = (
   table: google.cloud.documentai.v1.Document.Page.ITable,
   text: string
@@ -61,15 +65,21 @@ const printTableInfo = (
   let headerRowText = '';
 
   if (!table.headerRows?.[0]?.cells || !table.bodyRows?.length) {
-    return;
+    throw new Error('No table found');
   }
+
+  let lines: Lines = [];
+  let line: Line = [];
 
   for (const headerCell of table.headerRows[0].cells) {
     if (!headerCell.layout?.textAnchor) continue;
     const headerCellText = getText(headerCell.layout.textAnchor, text);
+    line = [...line, JSON.stringify(headerCellText.trim()).replace(/"/g, '')];
     headerRowText += `${JSON.stringify(headerCellText.trim())} | `;
   }
-  console.log(`${headerRowText.substring(0, headerRowText.length - 3)}`);
+  lines = [...lines, line];
+  line = [];
+  //console.log(`${headerRowText.substring(0, headerRowText.length - 3)}`);
 
   let bodyRowText = '';
 
@@ -78,11 +88,16 @@ const printTableInfo = (
     for (const bodyCell of bodyRows.cells) {
       if (!bodyCell.layout?.textAnchor) continue;
       const bodyCellText = getText(bodyCell.layout.textAnchor, text);
+      line = [...line, JSON.stringify(bodyCellText.trim()).replace(/"/g, '')];
       bodyRowText += `${JSON.stringify(bodyCellText.trim())} | `;
     }
-    console.log(`${bodyRowText.substring(0, bodyRowText.length - 3)}`);
+    //console.log(`${bodyRowText.substring(0, bodyRowText.length - 3)}`);
+    lines = [...lines, line];
     bodyRowText = '';
+    line = [];
   }
+  console.log(lines);
+  return lines;
 };
 
 // Extract shards from the text field
@@ -101,22 +116,74 @@ const getText = (
   return text.substring(startIndex as number, endIndex as number);
 };
 
-export const getCurrentOffer = async (): Promise<Offer[] | null> => {
+const getDateFromTo = (text: string) => {
+  const datePattern = /\d{4}\.\s\d{2}\.\d{2}\.\s\d{2}\.\d{2}\./g;
+  const dateStrArr = text.match(datePattern);
+  if (!dateStrArr) throw new Error('No date found');
+  const date = dateStrArr[0].split('.');
+  const yearFrom = parseInt(date[0]);
+  const monthFrom = parseInt(date[1]) - 1;
+  const dayFrom = parseInt(date[2]);
+  const yearTo = parseInt(date[0]);
+  const monthTo = parseInt(date[3]) - 1;
+  const dayTo = parseInt(date[4]);
+  return {
+    from: new Date(yearFrom, monthFrom, dayFrom),
+    to: new Date(yearTo, monthTo, dayTo),
+  };
+};
+
+export const getCurrentOffer = async (): Promise<Offer[]> => {
   const processedImage = processImage('temp/zona.jpg');
   const { document } = processedImage;
 
-  if (!document?.pages) return null;
+  if (!document?.pages) throw new Error('No table found');
+
+  const datePattern = /\d{4}\.\s\d{2}\.\d{2}\.\s\d{2}\.\d{2}\./g;
 
   const { text } = document;
+  if (!text) throw new Error('No text found');
   const { pages } = document;
 
-  if (!pages.length) return null;
+  if (!pages.length) throw new Error('No table found');
   const page = pages[0];
 
-  if (!page.tables?.length) return null;
+  if (!page.tables?.length) throw new Error('No table found');
   const table = page.tables[0];
 
-  printTableInfo(table, text as string);
+  const dateStrArr = text.match(datePattern);
+  if (!dateStrArr) throw new Error('No date found');
 
-  return [{ day: weekdays.MONDAY, offer: 'Babgulyás', price: 800 }];
+  const { from, to } = getDateFromTo(text);
+  console.log(from, to);
+
+  const lines = printTableInfo(table, text as string);
+  let isMenu = false;
+  let isDay = true;
+  const startDay = dayjs(from);
+  let i = 0;
+  for (const line of lines) {
+    // In case of empty line
+    if (line[1].length === 0 || line[2].length === 0) continue;
+
+    if (line[0].length > 0) {
+      isDay = !isDay;
+      isMenu = !isMenu;
+    }
+
+    const offer = {
+      day: startDay.add(i, 'day').toDate(),
+      offer: line[1],
+      price: parseInt(line[2]),
+    };
+    if (isDay && !isMenu) {
+      i++;
+      isDay = true;
+      isMenu = false;
+    }
+
+    console.log(offer);
+  }
+
+  return [{ day: new Date(), offer: 'Babgulyás', price: 800 }];
 };

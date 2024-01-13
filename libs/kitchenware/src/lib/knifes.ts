@@ -23,7 +23,7 @@ export const weekdays = {
 export type WEEKDAYS = typeof weekdays[keyof typeof weekdays];
 
 export interface Offer {
-  day: WEEKDAYS;
+  day: Date;
   offer: string;
   price: number;
 }

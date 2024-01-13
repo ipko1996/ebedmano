@@ -7,7 +7,7 @@ import 'dotenv/config';
 import { DocumentProcessorServiceClient } from '@google-cloud/documentai';
 import { readFileSync } from 'fs';
 
-import mockJson from './../../mock/result.json';
+import mockJson from './../../mock/photo_missing_monday.json';
 import { google } from '@google-cloud/documentai/build/protos/protos';
 
 const projectId = process.env.PROJECT_ID;
