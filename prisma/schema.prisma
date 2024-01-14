@@ -11,11 +11,12 @@ datasource db {
 }
 
 model Restaurant {
-  id       Int    @id @default(autoincrement())
-  name     String
-  uniqueId String @unique
-  city     String
-  menus    Menu[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  uniqueId     String         @unique
+  city         String
+  menus        Menu[]
+  Subscription Subscription[]
 }
 
 model Menu {
@@ -32,4 +33,20 @@ model MenuItem {
   id   Int    @id @default(autoincrement())
   name String @unique
   Menu Menu[]
+}
+
+model TeamsChannel {
+  id           Int            @id @default(autoincrement())
+  channelName  String
+  webhookLink  String         @unique
+  Subscription Subscription[]
+}
+
+model Subscription {
+  id             Int           @id @default(autoincrement())
+  restaurantId   Int
+  teamsChannelId Int
+  lastPostedDate DateTime?
+  Restaurant     Restaurant    @relation(fields: [restaurantId], references: [id])
+  TeamsChannel   TeamsChannel? @relation(fields: [teamsChannelId], references: [id])
 }
