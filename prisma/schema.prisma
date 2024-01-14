@@ -20,17 +20,16 @@ model Restaurant {
 
 model Menu {
   id           Int        @id @default(autoincrement())
-  name         MenuItem   @relation(fields: [menuItemId], references: [id])
   price        Int
   date         DateTime
-  validUntil   DateTime
   restaurantId Int
   Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
   menuItemId   Int
+  MenuItem     MenuItem   @relation(fields: [menuItemId], references: [id])
 }
 
 model MenuItem {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @unique
   Menu Menu[]
 }

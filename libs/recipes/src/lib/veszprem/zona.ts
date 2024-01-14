@@ -7,13 +7,14 @@
 
 import { Offer, processImage } from '@ebedmano/kitchenware';
 import { google } from '@google-cloud/documentai/build/protos/protos';
+
 import dayjs from 'dayjs';
 
-// const Zona = {
-//   name: 'Zona',
-//   city: 'Veszprém',
-//   uniqueId: 'VESZ_ZONA',
-// };
+export const RESTAURANT_DATA = {
+  name: 'Zona',
+  city: 'Veszprém',
+  uniqueId: 'VESZ_ZONA',
+} as const;
 // const FACEBOOK_URL = 'https://www.facebook.com/zonaetterem/';
 // const FEED_IMAGE_SELECTOR = '//*[@id=":rb:"]/div[1]/a';
 // const QUALITY_IMAGE_SELECTOR = '.x85a59c.x193iq5w.x4fas0m.x19kjcj4';
@@ -96,7 +97,7 @@ const printTableInfo = (
     bodyRowText = '';
     line = [];
   }
-  console.log(lines);
+  //console.log(lines);
   return lines;
 };
 
@@ -162,6 +163,7 @@ export const getCurrentOffer = async (): Promise<Offer[]> => {
   let isDay = true;
   const startDay = dayjs(from);
   let i = 0;
+  let offers: Offer[] = [];
   for (const line of lines) {
     // In case of empty line
     if (line[1].length === 0 || line[2].length === 0) continue;
@@ -176,14 +178,13 @@ export const getCurrentOffer = async (): Promise<Offer[]> => {
       offer: line[1],
       price: parseInt(line[2]),
     };
+    offers = [...offers, offer];
     if (isDay && !isMenu) {
       i++;
       isDay = true;
       isMenu = false;
     }
-
-    console.log(offer);
   }
 
-  return [{ day: new Date(), offer: 'Babgulyás', price: 800 }];
+  return offers;
 };

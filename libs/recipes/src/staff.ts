@@ -19,6 +19,11 @@ type RestaurantToEvent = Record<RESTAURANT, IWaiter>;
 
 export interface IWaiter {
   getCurrentOffer: () => Promise<Offer[]>;
+  RESTAURANT_DATA: {
+    name: string;
+    city: string;
+    uniqueId: string;
+  };
 }
 
 /**
