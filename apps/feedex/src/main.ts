@@ -8,6 +8,7 @@ import * as path from 'path';
 
 import { menuCrud } from '@ebedmano/menu';
 import { updateCrud } from '@ebedmano/update';
+import { subscriptionsCrud } from '@ebedmano/subscriptions';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/api', (req, res) => {
 
 app.use('/api/menu', menuCrud);
 app.use('/api/update', updateCrud);
+app.use('/api/subscriptions', subscriptionsCrud);
 
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
