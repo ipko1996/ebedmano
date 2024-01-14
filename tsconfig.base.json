@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "strict": true,
     "paths": {
       "@ebedmano/kitchenware": ["libs/kitchenware/src/index.ts"],
       "@ebedmano/menu": ["libs/menu/src/index.ts"],

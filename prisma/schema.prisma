@@ -43,10 +43,12 @@ model TeamsChannel {
 }
 
 model Subscription {
-  id             Int           @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   restaurantId   Int
   teamsChannelId Int
   lastPostedDate DateTime?
-  Restaurant     Restaurant    @relation(fields: [restaurantId], references: [id])
-  TeamsChannel   TeamsChannel? @relation(fields: [teamsChannelId], references: [id])
+  Restaurant     Restaurant   @relation(fields: [restaurantId], references: [id])
+  TeamsChannel   TeamsChannel @relation(fields: [teamsChannelId], references: [id])
+
+  @@unique([restaurantId, teamsChannelId])
 }
