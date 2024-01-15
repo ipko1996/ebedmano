@@ -21,5 +21,6 @@ import { getCurrentOfferFor } from '@ebedmano/recipes';
 // job.start();
 
 (async () => {
-  await getCurrentOfferFor('VESZ_ZONA');
+  const asd = await getCurrentOfferFor('VESZ_ZONA');
+  // console.log(asd);
 })();

@@ -58,13 +58,11 @@ export const RESTAURANT_DATA = {
 type Line = Array<string>;
 type Lines = Array<Line>;
 
-const printTableInfo = (
+const getLines = (
   table: google.cloud.documentai.v1.Document.Page.ITable,
   text: string
 ) => {
   // Print header row
-  let headerRowText = '';
-
   if (!table.headerRows?.[0]?.cells || !table.bodyRows?.length) {
     throw new Error('No table found');
   }
@@ -76,13 +74,9 @@ const printTableInfo = (
     if (!headerCell.layout?.textAnchor) continue;
     const headerCellText = getText(headerCell.layout.textAnchor, text);
     line = [...line, JSON.stringify(headerCellText.trim()).replace(/"/g, '')];
-    headerRowText += `${JSON.stringify(headerCellText.trim())} | `;
   }
   lines = [...lines, line];
   line = [];
-  //console.log(`${headerRowText.substring(0, headerRowText.length - 3)}`);
-
-  let bodyRowText = '';
 
   for (const bodyRows of table.bodyRows) {
     if (!bodyRows.cells) continue;
@@ -90,18 +84,13 @@ const printTableInfo = (
       if (!bodyCell.layout?.textAnchor) continue;
       const bodyCellText = getText(bodyCell.layout.textAnchor, text);
       line = [...line, JSON.stringify(bodyCellText.trim()).replace(/"/g, '')];
-      bodyRowText += `${JSON.stringify(bodyCellText.trim())} | `;
     }
-    //console.log(`${bodyRowText.substring(0, bodyRowText.length - 3)}`);
     lines = [...lines, line];
-    bodyRowText = '';
     line = [];
   }
-  //console.log(lines);
   return lines;
 };
 
-// Extract shards from the text field
 const getText = (
   textAnchor: google.cloud.documentai.v1.Document.ITextAnchor,
   text: string
@@ -134,31 +123,8 @@ const getDateFromTo = (text: string) => {
   };
 };
 
-export const getCurrentOffer = async (): Promise<Offer[]> => {
-  const processedImage = processImage('temp/zona.jpg');
-  const { document } = processedImage;
-
-  if (!document?.pages) throw new Error('No table found');
-
-  const datePattern = /\d{4}\.\s\d{2}\.\d{2}\.\s\d{2}\.\d{2}\./g;
-
-  const { text } = document;
-  if (!text) throw new Error('No text found');
-  const { pages } = document;
-
-  if (!pages.length) throw new Error('No table found');
-  const page = pages[0];
-
-  if (!page.tables?.length) throw new Error('No table found');
-  const table = page.tables[0];
-
-  const dateStrArr = text.match(datePattern);
-  if (!dateStrArr) throw new Error('No date found');
-
-  const { from, to } = getDateFromTo(text);
-  console.log(from, to);
-
-  const lines = printTableInfo(table, text as string);
+const getOffers = (text: string, lines: Lines) => {
+  const { from } = getDateFromTo(text);
   let isMenu = false;
   let isDay = true;
   const startDay = dayjs(from);
@@ -185,6 +151,23 @@ export const getCurrentOffer = async (): Promise<Offer[]> => {
       isMenu = false;
     }
   }
-
+  console.log(offers);
   return offers;
+};
+
+export const getCurrentOffer = async (): Promise<Offer[]> => {
+  const processedImage = processImage('temp/zona.jpg');
+  const { document } = processedImage;
+
+  if (!document?.pages || !document.text) {
+    throw new Error('Invalid document structure');
+  }
+
+  const { text, pages } = document;
+  const page = pages[0];
+  const table = page.tables?.[0];
+  if (!table) throw new Error('No table found');
+  const lines = getLines(table, text);
+
+  return getOffers(text, lines);
 };
