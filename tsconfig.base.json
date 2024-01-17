@@ -20,7 +20,6 @@
     "paths": {
       "@ebedmano/kitchenware": ["libs/kitchenware/src/index.ts"],
       "@ebedmano/menu": ["libs/menu/src/index.ts"],
-      "@ebedmano/prisma-client": ["libs/prisma-client/src/index.ts"],
       "@ebedmano/recipes": ["libs/recipes/src/index.ts"],
       "@ebedmano/subscriptions": ["libs/subscriptions/src/index.ts"],
       "@ebedmano/update": ["libs/update/src/index.ts"]

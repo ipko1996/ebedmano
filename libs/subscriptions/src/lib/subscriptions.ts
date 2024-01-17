@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { validateRequest } from 'zod-express-middleware';
-import { prismaClient } from '@ebedmano/prisma-client';
+import { prismaClient } from '@ebedmano/kitchenware';
 import { subscriptionInputSchema } from '../schemas/subscription.schema';
 
 export const subscriptionsCrud: Router = Router();

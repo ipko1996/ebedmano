@@ -1,5 +1,4 @@
 // import { Menu } from '@prisma/client';
-// import { prismaClient } from '@ebedmano/prisma-client';
 // import { createWebDriver, getElement } from '@ebedmano/kitchenware';
 // import { By } from 'selenium-webdriver';
 // import axios from 'axios';

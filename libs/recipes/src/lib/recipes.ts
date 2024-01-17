@@ -1,6 +1,6 @@
 import { Offer } from '@ebedmano/kitchenware';
 import { RESTAURANT, toEventMapFor } from '../staff';
-import { prismaClient } from '@ebedmano/prisma-client';
+import { prismaClient } from '@ebedmano/kitchenware';
 import { Menu } from '@prisma/client';
 
 export async function getCurrentOfferFor(

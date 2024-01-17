@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { prismaClient } from '@ebedmano/prisma-client';
+import { prismaClient } from '@ebedmano/kitchenware';
 
 export const menuCrud: Router = Router();
 
