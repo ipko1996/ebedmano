@@ -9,11 +9,23 @@ import * as path from 'path';
 import { menuCrud } from '@ebedmano/menu';
 import { updateCrud } from '@ebedmano/update';
 import { subscriptionsCrud } from '@ebedmano/subscriptions';
+import { pinoHttp } from 'pino-http';
 
 const app = express();
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.json());
+app.use(
+  pinoHttp({
+    transport: {
+      target: 'pino-pretty',
+    },
+    redact: {
+      paths: ['req', 'res'],
+      remove: true,
+    },
+  })
+);
 
 app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to feedex!' });

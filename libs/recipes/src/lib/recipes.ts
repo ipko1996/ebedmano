@@ -1,4 +1,4 @@
-import { Offer } from '@ebedmano/kitchenware';
+import { Offer, logger } from '@ebedmano/kitchenware';
 import { RESTAURANT, toEventMapFor } from '../staff';
 import { prismaClient } from '@ebedmano/kitchenware';
 import { Menu } from '@prisma/client';
@@ -6,6 +6,7 @@ import { Menu } from '@prisma/client';
 export async function getCurrentOfferFor(
   restaurant: string
 ): Promise<Menu[] | null | Offer[]> {
+  logger.info(`Getting current offer for ${restaurant}`);
   const currentRestaurant = toEventMapFor(restaurant as RESTAURANT);
   if (typeof currentRestaurant === 'string') return null;
 
@@ -22,6 +23,7 @@ export async function getCurrentOfferFor(
 
   // We have the offer for this week
   if (currentOffer.length > 0) return currentOffer;
+  logger.info(`No offer found for ${restaurant} for this week, fetching...`);
 
   // We don't have the offer for this week
   const offer = await currentRestaurant.getCurrentOffer();
@@ -94,6 +96,7 @@ const getCurrentWeekDates = (): { monday: Date; sunday: Date } => {
 };
 
 const getOfferFromTo = async (restaurantId: string, from: Date, to: Date) => {
+  logger.info(`Getting offer from ${from} to ${to}`);
   return await prismaClient.menu.findMany({
     orderBy: {
       date: 'asc',

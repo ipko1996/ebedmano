@@ -6,6 +6,7 @@
 
 import { Offer, processImage } from '@ebedmano/kitchenware';
 import { google } from '@google-cloud/documentai/build/protos/protos';
+import { logger } from '@ebedmano/kitchenware';
 
 import dayjs from 'dayjs';
 
@@ -150,11 +151,11 @@ const getOffers = (text: string, lines: Lines) => {
       isMenu = false;
     }
   }
-  console.log(offers);
   return offers;
 };
 
 export const getCurrentOffer = async (): Promise<Offer[]> => {
+  logger.info('Getting new offer from Zona');
   const processedImage = processImage('temp/zona.jpg');
   const { document } = processedImage;
 
