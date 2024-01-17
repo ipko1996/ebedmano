@@ -11,44 +11,60 @@ datasource db {
 }
 
 model Restaurant {
-  id           Int            @id @default(autoincrement())
-  name         String
-  uniqueId     String         @unique
-  city         String
-  menus        Menu[]
-  Subscription Subscription[]
+  restaurantId   Int            @id @default(autoincrement())
+  name           String
+  uniqueId       String         @unique
+  city           String
+  lastPostedDate DateTime?
+  Menus          Menu[]
+  Subscription   Subscription[]
 }
 
 model Menu {
-  id           Int        @id @default(autoincrement())
+  menuId       Int        @id @default(autoincrement())
   price        Int
   date         DateTime
   restaurantId Int
-  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  menuItemId   Int
-  MenuItem     MenuItem   @relation(fields: [menuItemId], references: [id])
+  foodNameId   Int
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [restaurantId])
+  FoodName     FoodName   @relation(fields: [foodNameId], references: [foodNameId])
 }
 
-model MenuItem {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  Menu Menu[]
-}
-
-model TeamsChannel {
-  id           Int            @id @default(autoincrement())
-  channelName  String
-  webhookLink  String         @unique
-  Subscription Subscription[]
+model FoodName {
+  foodNameId Int    @id @default(autoincrement())
+  name       String @unique
+  Menu       Menu[]
 }
 
 model Subscription {
-  id             Int          @id @default(autoincrement())
-  restaurantId   Int
-  teamsChannelId Int
-  lastPostedDate DateTime?
-  Restaurant     Restaurant   @relation(fields: [restaurantId], references: [id])
-  TeamsChannel   TeamsChannel @relation(fields: [teamsChannelId], references: [id])
+  restaurantId Int
+  botId        Int
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [restaurantId])
+  Bot          Bot        @relation(fields: [botId], references: [botId])
 
-  @@unique([restaurantId, teamsChannelId])
+  @@id([restaurantId, botId])
+}
+
+model Bot {
+  botId        Int            @id @default(autoincrement())
+  webhookLink  String         @unique
+  botName      String
+  serviceId    Int
+  Service      Service        @relation(fields: [serviceId], references: [serviceId])
+  User         User           @relation(fields: [userId], references: [userId])
+  userId       Int
+  Subscription Subscription[]
+}
+
+model User {
+  userId Int    @id @default(autoincrement())
+  name   String
+  email  String @unique
+  Bot    Bot[]
+}
+
+model Service {
+  serviceId Int    @id @default(autoincrement())
+  name      String
+  Bot       Bot[]
 }

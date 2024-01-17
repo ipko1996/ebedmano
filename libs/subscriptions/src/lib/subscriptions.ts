@@ -19,7 +19,7 @@ subscriptionsCrud.post(
   validateRequest({ body: subscriptionInputSchema }),
   async (req, res) => {
     const restaurantId = req.body.restaurantId;
-    const teamsChannelId = req.body.teamsChannelId;
+    const botId = req.body.botId;
 
     // Check if subscription already exists
 
@@ -30,7 +30,7 @@ subscriptionsCrud.post(
     await prismaClient.subscription.create({
       data: {
         restaurantId,
-        teamsChannelId,
+        botId,
       },
     });
     res.status(200).send({ message: 'Subscription created' });
@@ -38,10 +38,14 @@ subscriptionsCrud.post(
 );
 
 subscriptionsCrud.delete('/:id', async (req, res) => {
-  const id = Number(req.params.id);
+  const botId = Number(req.params.id);
+  const restaurantId = req.body.restaurantId;
   await prismaClient.subscription.delete({
     where: {
-      id: id,
+      restaurantId_botId: {
+        botId,
+        restaurantId,
+      },
     },
   });
   res.status(200).send({ message: 'Subscription deleted' });

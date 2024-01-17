@@ -43,11 +43,11 @@ export async function getCurrentOfferFor(
   };
 
   // Stupid prisma
-  await prismaClient.menuItem.createMany({
+  await prismaClient.foodName.createMany({
     data: menuItemData,
     skipDuplicates: true,
   });
-  const allMenuItems = await prismaClient.menuItem.findMany({
+  const allMenuItems = await prismaClient.foodName.findMany({
     where: {
       name: {
         in: menuItemData.map((item) => item.name),
@@ -66,8 +66,8 @@ export async function getCurrentOfferFor(
   const menuData = offer.map((offerItem, index) => ({
     date: offerItem.day,
     price: offerItem.price,
-    restaurantId: createdRestaurant.id,
-    menuItemId: allMenuItems[index].id,
+    restaurantId: createdRestaurant.restaurantId,
+    foodNameId: allMenuItems[index].foodNameId,
     //menuItemId: allMenuItems.find((item) => item.name === offerItem.offer).id,
   }));
 
@@ -106,7 +106,7 @@ const getOfferFromTo = async (restaurantId: string, from: Date, to: Date) => {
       date: 'asc',
     },
     include: {
-      MenuItem: true,
+      FoodName: true,
       Restaurant: true,
     },
     where: {
