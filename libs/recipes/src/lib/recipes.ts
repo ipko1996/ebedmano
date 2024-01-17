@@ -6,51 +6,44 @@ import { Menu } from '@prisma/client';
 export async function getCurrentOfferFor(
   restaurant: string
 ): Promise<Menu[] | null | Offer[]> {
-  const restaurantEnum = toEventMapFor(restaurant as RESTAURANT);
-  if (typeof restaurantEnum === 'string') {
-    return null;
-  }
+  const currentRestaurant = toEventMapFor(restaurant as RESTAURANT);
+  if (typeof currentRestaurant === 'string') return null;
+
   const { monday, sunday } = getCurrentWeekDates();
-
-  // console.log('Monday:', monday.toISOString());
-  // console.log('Sunday:', sunday.toISOString());
-
   const thisWeekStartDate = monday;
   const thisWeekEndDate = sunday;
 
-  const uniqueId = restaurantEnum.RESTAURANT_DATA.uniqueId;
+  const uniqueId = currentRestaurant.RESTAURANT_DATA.uniqueId;
   const currentOffer = await getOfferFromTo(
     uniqueId,
     thisWeekStartDate,
     thisWeekEndDate
   );
 
-  //console.log(currentOffer);
+  // We have the offer for this week
+  if (currentOffer.length > 0) return currentOffer;
 
-  if (currentOffer.length > 0) {
-    return currentOffer;
-  }
+  // We don't have the offer for this week
+  const offer = await currentRestaurant.getCurrentOffer();
 
-  const offer = await restaurantEnum.getCurrentOffer();
-
-  const menuItemData = offer.map((offerItem) => ({
+  const foodNameData = offer.map((offerItem) => ({
     name: offerItem.offer,
   }));
   const restaurantData = {
-    city: restaurantEnum.RESTAURANT_DATA.city,
-    name: restaurantEnum.RESTAURANT_DATA.name,
+    city: currentRestaurant.RESTAURANT_DATA.city,
+    name: currentRestaurant.RESTAURANT_DATA.name,
     uniqueId: uniqueId,
   };
 
   // Stupid prisma
   await prismaClient.foodName.createMany({
-    data: menuItemData,
+    data: foodNameData,
     skipDuplicates: true,
   });
-  const allMenuItems = await prismaClient.foodName.findMany({
+  const allFoodNameItems = await prismaClient.foodName.findMany({
     where: {
       name: {
-        in: menuItemData.map((item) => item.name),
+        in: foodNameData.map((food) => food.name),
       },
     },
   });
@@ -63,12 +56,13 @@ export async function getCurrentOfferFor(
     },
   });
 
-  const menuData = offer.map((offerItem, index) => ({
+  const menuData = offer.map((offerItem) => ({
     date: offerItem.day,
     price: offerItem.price,
     restaurantId: createdRestaurant.restaurantId,
-    foodNameId: allMenuItems[index].foodNameId,
-    //menuItemId: allMenuItems.find((item) => item.name === offerItem.offer).id,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    foodNameId: allFoodNameItems.find((food) => food.name === offerItem.offer)
+      ?.foodNameId!,
   }));
 
   await prismaClient.menu.createMany({
@@ -80,7 +74,6 @@ export async function getCurrentOfferFor(
     thisWeekStartDate,
     thisWeekEndDate
   );
-  //console.log(newCurrentOffer);
 
   return newCurrentOffer;
 }
@@ -142,8 +135,8 @@ const getOfferFromTo = async (restaurantId: string, from: Date, to: Date) => {
 //         uniqueId: uniqueId,
 //       },
 //       create: {
-//         city: restaurantEnum.RESTAURANT_DATA.city,
-//         name: restaurantEnum.RESTAURANT_DATA.name,
+//         city: currentRestaurant.RESTAURANT_DATA.city,
+//         name: currentRestaurant.RESTAURANT_DATA.name,
 //         uniqueId: uniqueId,
 //       },
 //     },
