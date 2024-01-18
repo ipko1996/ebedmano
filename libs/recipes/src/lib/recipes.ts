@@ -1,14 +1,14 @@
-import { Offer, logger } from '@ebedmano/kitchenware';
+import { logger } from '@ebedmano/kitchenware';
 import { RESTAURANT, toEventMapFor } from '../staff';
 import { prismaClient } from '@ebedmano/kitchenware';
 import { Menu } from '@prisma/client';
 
-export async function getCurrentOfferFor(
+export const getCurrentOfferFor = async (
   restaurant: string
-): Promise<Menu[] | null | Offer[]> {
+): Promise<string | Menu[]> => {
   logger.info(`Getting current offer for ${restaurant}`);
   const currentRestaurant = toEventMapFor(restaurant as RESTAURANT);
-  if (typeof currentRestaurant === 'string') return null;
+  if (typeof currentRestaurant === 'string') return currentRestaurant;
 
   const { monday, sunday } = getCurrentWeekDates();
   const thisWeekStartDate = monday;
@@ -28,7 +28,13 @@ export async function getCurrentOfferFor(
   // We don't have the offer for this week
   const offer = await currentRestaurant.getCurrentOffer();
 
-  const foodNameData = offer.map((offerItem) => ({
+  if (!offer.succsess) {
+    // Error happened while fetching
+    logger.info(`Fetching failed for ${restaurant}`);
+    return offer.message || 'Unknown error';
+  }
+
+  const foodNameData = offer.offers.map((offerItem) => ({
     name: offerItem.foodName,
   }));
   const restaurantData = {
@@ -58,7 +64,7 @@ export async function getCurrentOfferFor(
     },
   });
 
-  const menuData = offer.map((offerItem) => ({
+  const menuData = offer.offers.map((offerItem) => ({
     date: offerItem.day,
     price: offerItem.price,
     restaurantId: createdRestaurant.restaurantId,
@@ -79,7 +85,7 @@ export async function getCurrentOfferFor(
   );
 
   return newCurrentOffer;
-}
+};
 
 const getCurrentWeekDates = (): { monday: Date; sunday: Date } => {
   const today = new Date();
@@ -119,30 +125,3 @@ const getOfferFromTo = async (restaurantId: string, from: Date, to: Date) => {
     },
   });
 };
-
-// {
-//   date: offer[0].day,
-//   price: offer[0].price,
-//   MenuItem: {
-//     connectOrCreate: {
-//       create: {
-//         name: offer[0].offer,
-//       },
-//       where: {
-//         name: offer[0].offer,
-//       },
-//     },
-//   },
-//   Restaurant: {
-//     connectOrCreate: {
-//       where: {
-//         uniqueId: uniqueId,
-//       },
-//       create: {
-//         city: currentRestaurant.RESTAURANT_DATA.city,
-//         name: currentRestaurant.RESTAURANT_DATA.name,
-//         uniqueId: uniqueId,
-//       },
-//     },
-//   },
-// }

@@ -64,7 +64,7 @@ const getLines = (
 ) => {
   // Print header row
   if (!table.headerRows?.[0]?.cells || !table.bodyRows?.length) {
-    throw new Error('No table found');
+    throw new Error('Wrong structure');
   }
 
   let lines: Lines = [];
@@ -109,7 +109,8 @@ const getText = (
 const getDateFromTo = (text: string) => {
   const datePattern = /\d{4}\.\s\d{2}\.\d{2}\.\s\d{2}\.\d{2}\./g;
   const dateStrArr = text.match(datePattern);
-  if (!dateStrArr) throw new Error('No date found');
+  if (!dateStrArr) throw new Error('Wrong structure');
+
   const date = dateStrArr[0].split('.');
   const yearFrom = parseInt(date[0]);
   const monthFrom = parseInt(date[1]) - 1;
@@ -154,20 +155,48 @@ const getOffers = (text: string, lines: Lines) => {
   return offers;
 };
 
-export const getCurrentOffer = async (): Promise<Offer[]> => {
+export const getCurrentOffer = async (): Promise<{
+  offers: Offer[];
+  succsess: boolean;
+  message?: string;
+}> => {
   logger.info('Getting new offer from Zona');
   const processedImage = processImage('temp/zona.jpg');
   const { document } = processedImage;
 
   if (!document?.pages || !document.text) {
-    throw new Error('Invalid document structure');
+    return {
+      offers: [],
+      succsess: false,
+      message: 'Wrong structure, no pages found',
+    };
   }
 
   const { text, pages } = document;
   const page = pages[0];
   const table = page.tables?.[0];
-  if (!table) throw new Error('No table found');
-  const lines = getLines(table, text);
+  if (!table)
+    return {
+      offers: [],
+      succsess: false,
+      message: 'Wrong structure, no table found',
+    };
 
-  return getOffers(text, lines);
+  let lines: Lines;
+
+  let offers: Offer[];
+
+  try {
+    lines = getLines(table, text);
+    offers = getOffers(text, lines);
+  } catch (error: unknown) {
+    logger.error(error);
+    return {
+      offers: [],
+      succsess: false,
+      message: 'Error while processing data',
+    };
+  }
+
+  return { offers, succsess: true };
 };

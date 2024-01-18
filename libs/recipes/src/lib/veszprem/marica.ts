@@ -5,5 +5,5 @@ export const RESTAURANT_DATA = {
 } as const;
 
 export const getCurrentOffer = async () => {
-  return [{ day: new Date(), foodName: 'Babgulyás', price: 800 }];
+  throw new Error('Not implemented');
 };

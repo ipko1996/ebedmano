@@ -10,6 +10,7 @@ import { menuRoutes } from '@ebedmano/menu';
 import { updateRoutes } from '@ebedmano/update';
 import { subscriptionsRoutes } from '@ebedmano/subscriptions';
 import { pinoHttp } from 'pino-http';
+import { connectToDb } from '@ebedmano/kitchenware';
 
 const app = express();
 
@@ -36,7 +37,8 @@ app.use('/api/update', updateRoutes);
 app.use('/api/subscriptions', subscriptionsRoutes);
 
 const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
+const server = app.listen(port, async () => {
+  await connectToDb();
+  console.log(`🌎 Listening at http://localhost:${port}/api`);
 });
 server.on('error', console.error);
