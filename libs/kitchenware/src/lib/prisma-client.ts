@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { logger } from './logger';
 
 export const prismaClient = new PrismaClient({
-  log: ['query', 'info', 'warn'],
+  // log: ['query', 'info', 'warn'],
 });
 
 const connectToDb = async () => {

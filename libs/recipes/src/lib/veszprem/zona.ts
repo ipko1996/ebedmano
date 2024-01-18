@@ -1,13 +1,11 @@
-// import { Menu } from '@prisma/client';
-// import { createWebDriver, getElement } from '@ebedmano/kitchenware';
-// import { By } from 'selenium-webdriver';
-// import axios from 'axios';
+import { createWebDriver, getElement } from '@ebedmano/kitchenware';
+import { By } from 'selenium-webdriver';
+import axios from 'axios';
 // import { writeFileSync } from 'fs';
 
 import { Offer, processImage } from '@ebedmano/kitchenware';
 import { google } from '@google-cloud/documentai/build/protos/protos';
 import { logger } from '@ebedmano/kitchenware';
-
 import dayjs from 'dayjs';
 
 export const RESTAURANT_DATA = {
@@ -15,45 +13,38 @@ export const RESTAURANT_DATA = {
   city: 'Veszprém',
   uniqueId: 'VESZ_ZONA',
 } as const;
-// const FACEBOOK_URL = 'https://www.facebook.com/zonaetterem/';
-// const FEED_IMAGE_SELECTOR = '//*[@id=":rb:"]/div[1]/a';
-// const QUALITY_IMAGE_SELECTOR = '.x85a59c.x193iq5w.x4fas0m.x19kjcj4';
 
-// export const getCurrentOffer = async (): Promise<Menu[]> => {
-//   const restaurant = await prismaClient.restaurant.upsert({
-//     where: { uniqueId: Zona.uniqueId },
-//     update: {},
-//     create: Zona,
-//   });
-//   console.log(restaurant);
+const FACEBOOK_URL = 'https://www.facebook.com/zonaetterem/';
+const FEED_IMAGE_SELECTOR = '//*[@id=":rd:"]/div[1]/a';
+const QUALITY_IMAGE_SELECTOR = '.x85a59c.x193iq5w.x4fas0m.x19kjcj4';
 
-//   const driver = await createWebDriver();
-//   try {
-//     console.log('Navigating to Facebook');
-//     await driver.get(FACEBOOK_URL);
-//     const lastImg = await getElement(driver, FEED_IMAGE_SELECTOR);
-//     const urlToQualityImage = await lastImg.getAttribute('href');
-//     console.log(urlToQualityImage);
-//     await driver.get(urlToQualityImage);
-//     const qualityImage = await getElement(
-//       driver,
-//       QUALITY_IMAGE_SELECTOR,
-//       By.css
-//     );
-//     const qualityImageUrl = await qualityImage.getAttribute('src');
-//     const response = await axios.get(qualityImageUrl, {
-//       responseType: 'arraybuffer',
-//     });
-//     writeFileSync('temp/zona.jpg', response.data);
-//     console.log(qualityImageUrl);
-//   } catch (error) {
-//     console.log(error);
-//   } finally {
-//     driver.quit();
-//   }
-
-//   return [];
-// };
+const getImage = async () => {
+  const driver = await createWebDriver();
+  let image: string | undefined;
+  try {
+    console.log('Navigating to Facebook');
+    await driver.get(FACEBOOK_URL);
+    const lastImg = await getElement(driver, FEED_IMAGE_SELECTOR);
+    const urlToQualityImage = await lastImg.getAttribute('href');
+    console.log(urlToQualityImage);
+    await driver.get(urlToQualityImage);
+    const qualityImage = await getElement(
+      driver,
+      QUALITY_IMAGE_SELECTOR,
+      By.css
+    );
+    const qualityImageUrl = await qualityImage.getAttribute('src');
+    const response = await axios.get(qualityImageUrl, {
+      responseType: 'arraybuffer',
+    });
+    image = Buffer.from(response.data, 'binary').toString('base64');
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await driver.quit();
+  }
+  return image;
+};
 
 type Line = Array<string>;
 type Lines = Array<Line>;
@@ -126,6 +117,7 @@ const getDateFromTo = (text: string) => {
 
 const getOffers = (text: string, lines: Lines) => {
   const { from } = getDateFromTo(text);
+  // TODO if this is still last week's menu do something
   let isMenu = false;
   let isDay = true;
   const startDay = dayjs(from);
@@ -160,8 +152,20 @@ export const getCurrentOffer = async (): Promise<{
   succsess: boolean;
   message?: string;
 }> => {
+  const image = await getImage();
   logger.info('Getting new offer from Zona');
-  const processedImage = processImage('temp/zona.jpg');
+  let processedImage;
+  try {
+    processedImage = await processImage(image as string);
+  } catch (error) {
+    logger.error(error);
+    return {
+      offers: [],
+      succsess: false,
+      message: 'Error while processing image',
+    };
+  }
+
   const { document } = processedImage;
 
   if (!document?.pages || !document.text) {

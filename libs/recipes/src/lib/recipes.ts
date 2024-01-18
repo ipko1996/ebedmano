@@ -3,9 +3,7 @@ import { RESTAURANT, toEventMapFor } from '../staff';
 import { prismaClient } from '@ebedmano/kitchenware';
 import { Menu } from '@prisma/client';
 
-export const getCurrentOfferFor = async (
-  restaurant: string
-): Promise<string | Menu[]> => {
+export const getCurrentOfferFor = async (restaurant: string) => {
   logger.info(`Getting current offer for ${restaurant}`);
   const currentRestaurant = toEventMapFor(restaurant as RESTAURANT);
   if (typeof currentRestaurant === 'string') return currentRestaurant;
@@ -87,7 +85,7 @@ export const getCurrentOfferFor = async (
   return newCurrentOffer;
 };
 
-const getCurrentWeekDates = (): { monday: Date; sunday: Date } => {
+export const getCurrentWeekDates = (): { monday: Date; sunday: Date } => {
   const today = new Date();
   const dayOfWeek = today.getDay();
   const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // adjust when Sunday
@@ -102,7 +100,11 @@ const getCurrentWeekDates = (): { monday: Date; sunday: Date } => {
   return { monday, sunday };
 };
 
-const getOfferFromTo = async (restaurantId: string, from: Date, to: Date) => {
+export const getOfferFromTo = async (
+  restaurantId: string,
+  from: Date,
+  to: Date
+) => {
   logger.info(`Getting offer from ${from} to ${to}`);
   return await prismaClient.menu.findMany({
     orderBy: {

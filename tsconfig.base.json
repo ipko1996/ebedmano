@@ -18,6 +18,7 @@
     "esModuleInterop": true,
     "strict": true,
     "paths": {
+      "@ebedmano/delivery": ["libs/delivery/src/index.ts"],
       "@ebedmano/kitchenware": ["libs/kitchenware/src/index.ts"],
       "@ebedmano/menu": ["libs/menu/src/index.ts"],
       "@ebedmano/recipes": ["libs/recipes/src/index.ts"],
