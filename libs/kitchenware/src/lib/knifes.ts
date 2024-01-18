@@ -24,6 +24,6 @@ export type WEEKDAYS = typeof weekdays[keyof typeof weekdays];
 
 export interface Offer {
   day: Date;
-  offer: string;
+  foodName: string;
   price: number;
 }

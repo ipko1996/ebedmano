@@ -6,9 +6,9 @@
 import express from 'express';
 import * as path from 'path';
 
-import { menuCrud } from '@ebedmano/menu';
-import { updateCrud } from '@ebedmano/update';
-import { subscriptionsCrud } from '@ebedmano/subscriptions';
+import { menuRoutes } from '@ebedmano/menu';
+import { updateRoutes } from '@ebedmano/update';
+import { subscriptionsRoutes } from '@ebedmano/subscriptions';
 import { pinoHttp } from 'pino-http';
 
 const app = express();
@@ -31,9 +31,9 @@ app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to feedex!' });
 });
 
-app.use('/api/menu', menuCrud);
-app.use('/api/update', updateCrud);
-app.use('/api/subscriptions', subscriptionsCrud);
+app.use('/api/menu', menuRoutes);
+app.use('/api/update', updateRoutes);
+app.use('/api/subscriptions', subscriptionsRoutes);
 
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {

@@ -141,7 +141,7 @@ const getOffers = (text: string, lines: Lines) => {
 
     const offer = {
       day: startDay.add(i, 'day').toDate(),
-      offer: line[1],
+      foodName: line[1],
       price: parseInt(line[2]),
     };
     offers = [...offers, offer];

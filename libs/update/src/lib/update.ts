@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { getCurrentOfferFor } from '@ebedmano/recipes';
 
-export const updateCrud: Router = Router();
+export const updateRoutes: Router = Router();
 
-updateCrud.get('/:id', async (req: Request, res: Response) => {
+updateRoutes.get('/:id', async (req: Request, res: Response) => {
   try {
     const restaurantStr = req.params['id'];
     const offer = await getCurrentOfferFor(restaurantStr);

@@ -3,9 +3,9 @@ import { validateRequest } from 'zod-express-middleware';
 import { prismaClient } from '@ebedmano/kitchenware';
 import { subscriptionInputSchema } from '../schemas/subscription.schema';
 
-export const subscriptionsCrud: Router = Router();
+export const subscriptionsRoutes: Router = Router();
 
-subscriptionsCrud.get('/', async (req: Request, res: Response) => {
+subscriptionsRoutes.get('/', async (req: Request, res: Response) => {
   const subs = await prismaClient.subscription.findMany({
     include: {
       Restaurant: true,
@@ -14,7 +14,7 @@ subscriptionsCrud.get('/', async (req: Request, res: Response) => {
   res.send(subs);
 });
 
-subscriptionsCrud.post(
+subscriptionsRoutes.post(
   '/',
   validateRequest({ body: subscriptionInputSchema }),
   async (req, res) => {
@@ -37,7 +37,7 @@ subscriptionsCrud.post(
   }
 );
 
-subscriptionsCrud.delete('/:id', async (req, res) => {
+subscriptionsRoutes.delete('/:id', async (req, res) => {
   const botId = Number(req.params.id);
   const restaurantId = req.body.restaurantId;
   await prismaClient.subscription.delete({

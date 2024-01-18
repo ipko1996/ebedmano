@@ -5,5 +5,5 @@ export const RESTAURANT_DATA = {
 } as const;
 
 export const getCurrentOffer = async () => {
-  return [{ day: new Date(), offer: 'Babgulyás', price: 800 }];
+  return [{ day: new Date(), foodName: 'Babgulyás', price: 800 }];
 };

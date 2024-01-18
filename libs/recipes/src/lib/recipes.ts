@@ -29,7 +29,7 @@ export async function getCurrentOfferFor(
   const offer = await currentRestaurant.getCurrentOffer();
 
   const foodNameData = offer.map((offerItem) => ({
-    name: offerItem.offer,
+    name: offerItem.foodName,
   }));
   const restaurantData = {
     city: currentRestaurant.RESTAURANT_DATA.city,
@@ -63,8 +63,9 @@ export async function getCurrentOfferFor(
     price: offerItem.price,
     restaurantId: createdRestaurant.restaurantId,
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    foodNameId: allFoodNameItems.find((food) => food.name === offerItem.offer)
-      ?.foodNameId!,
+    foodNameId: allFoodNameItems.find(
+      (food) => food.name === offerItem.foodName
+    )?.foodNameId!,
   }));
 
   await prismaClient.menu.createMany({
