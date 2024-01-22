@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
 import { getCurrentOfferFor } from '@ebedmano/recipes';
-import { delivery } from '@ebedmano/delivery';
+import { deliveryFor } from '@ebedmano/delivery';
 
 /**
  * Lets just call a function in every hour
@@ -24,5 +24,5 @@ import { delivery } from '@ebedmano/delivery';
 (async () => {
   // const asd = await getCurrentOfferFor('VESZ_ZONA');
   // console.log(asd);
-  await delivery('VESZ_ZONA');
+  await deliveryFor('VESZ_ZONA');
 })();

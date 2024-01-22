@@ -5,7 +5,7 @@ import { prismaClient } from '@ebedmano/kitchenware';
 import { logger } from '@ebedmano/kitchenware';
 import { getCurrentOfferFor } from '@ebedmano/recipes';
 
-export const delivery = async (restaurant: string) => {
+export const deliveryFor = async (restaurant: string) => {
   const offer = await getCurrentOfferFor(restaurant);
   if (typeof offer === 'string') {
     logger.info(offer);
