@@ -115,9 +115,13 @@ const getDateFromTo = (text: string) => {
   };
 };
 
-const getOffers = (text: string, lines: Lines) => {
+const getOffers = (text: string, lines: Lines, currentMonday: Date) => {
   const { from } = getDateFromTo(text);
-  // TODO if this is still last week's menu do something
+
+  if (dayjs(from).isBefore(currentMonday)) {
+    throw new Error('No new menu posted yet');
+  }
+
   let isMenu = false;
   let isDay = true;
   const startDay = dayjs(from);
@@ -147,7 +151,9 @@ const getOffers = (text: string, lines: Lines) => {
   return offers;
 };
 
-export const getCurrentOffer = async (): Promise<{
+export const getCurrentOffer = async (
+  currentMonday: Date
+): Promise<{
   offers: Offer[];
   succsess: boolean;
   message?: string;
@@ -192,9 +198,16 @@ export const getCurrentOffer = async (): Promise<{
 
   try {
     lines = getLines(table, text);
-    offers = getOffers(text, lines);
+    offers = getOffers(text, lines, currentMonday);
   } catch (error: unknown) {
     logger.error(error);
+    if (error instanceof Error) {
+      return {
+        offers: [],
+        succsess: false,
+        message: error.message,
+      };
+    }
     return {
       offers: [],
       succsess: false,

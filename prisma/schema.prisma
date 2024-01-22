@@ -39,6 +39,7 @@ model FoodName {
 model Subscription {
   restaurantId Int
   botId        Int
+  lastPosted   DateTime?
   Restaurant   Restaurant @relation(fields: [restaurantId], references: [restaurantId])
   Bot          Bot        @relation(fields: [botId], references: [botId])
 

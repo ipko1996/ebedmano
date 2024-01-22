@@ -7,7 +7,10 @@ import { getCurrentOfferFor } from '@ebedmano/recipes';
 
 export const delivery = async (restaurant: string) => {
   const offer = await getCurrentOfferFor(restaurant);
-  if (typeof offer === 'string') return offer;
+  if (typeof offer === 'string') {
+    logger.info(offer);
+    return;
+  }
 
   //logger.info(offer);
 
@@ -37,16 +40,31 @@ export const delivery = async (restaurant: string) => {
     acc += `${curr.FoodName.name} - ${curr.price} Ft\n\n`;
     return acc;
   }, '');
-  logger.info(text);
 
   // logger.info(subs);
 
   for (const bot of subs) {
     logger.info(bot);
+    // If bot posted this week, skip
+    if (
+      bot.lastPosted &&
+      dayjs(bot.lastPosted).isAfter(dayjs().startOf('week'))
+    )
+      continue;
+
+    await prismaClient.subscription.update({
+      where: {
+        restaurantId_botId: {
+          botId: bot.botId,
+          restaurantId: bot.restaurantId,
+        },
+      },
+      data: {
+        lastPosted: new Date(),
+      },
+    });
     await axios.post(bot.Bot.webhookLink, {
       text,
     });
   }
-
-  return 'delivery';
 };

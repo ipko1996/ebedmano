@@ -1,7 +1,6 @@
 import { logger } from '@ebedmano/kitchenware';
 import { RESTAURANT, toEventMapFor } from '../staff';
 import { prismaClient } from '@ebedmano/kitchenware';
-import { Menu } from '@prisma/client';
 
 export const getCurrentOfferFor = async (restaurant: string) => {
   logger.info(`Getting current offer for ${restaurant}`);
@@ -24,7 +23,7 @@ export const getCurrentOfferFor = async (restaurant: string) => {
   logger.info(`No offer found for ${restaurant} for this week, fetching...`);
 
   // We don't have the offer for this week
-  const offer = await currentRestaurant.getCurrentOffer();
+  const offer = await currentRestaurant.getCurrentOffer(thisWeekStartDate);
 
   if (!offer.succsess) {
     // Error happened while fetching
