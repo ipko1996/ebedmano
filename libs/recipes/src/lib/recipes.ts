@@ -1,34 +1,26 @@
+import { Prisma } from '@prisma/client';
 import { logger } from '@ebedmano/kitchenware';
-import { RESTAURANT, toEventMapFor } from '../staff';
 import { prismaClient } from '@ebedmano/kitchenware';
+import dayjs from 'dayjs';
+import { IWaiter } from '../staff';
 
-export const getCurrentOfferFor = async (restaurant: string) => {
-  logger.info(`Getting current offer for ${restaurant}`);
-  const currentRestaurant = toEventMapFor(restaurant as RESTAURANT);
-  if (typeof currentRestaurant === 'string') return currentRestaurant;
-
-  const { monday, sunday } = getCurrentWeekDates();
-  const thisWeekStartDate = monday;
-  const thisWeekEndDate = sunday;
-
-  const uniqueId = currentRestaurant.RESTAURANT_DATA.uniqueId;
-  const currentOffer = await getOfferFromTo(
-    uniqueId,
-    thisWeekStartDate,
-    thisWeekEndDate
-  );
-
-  // We have the offer for this week
-  if (currentOffer.length > 0) return currentOffer;
-  logger.info(`No offer found for ${restaurant} for this week, fetching...`);
-
-  // We don't have the offer for this week
+/**
+ * Updates the offer for the given restaurant
+ * @param currentRestaurant
+ */
+export const updateOfferFor = async (currentRestaurant: IWaiter) => {
+  const thisWeekStartDate = dayjs().startOf('week').toDate();
   const offer = await currentRestaurant.getCurrentOffer(thisWeekStartDate);
 
   if (!offer.succsess) {
     // Error happened while fetching
-    logger.info(`Fetching failed for ${restaurant}`);
-    return offer.message || 'Unknown error';
+    logger.info(
+      `Fetching failed for ${currentRestaurant.RESTAURANT_DATA.name}`
+    );
+    return {
+      message: 'Fetching failed',
+      error: offer.message || 'Unknown error',
+    };
   }
 
   const foodNameData = offer.offers.map((offerItem) => ({
@@ -37,7 +29,7 @@ export const getCurrentOfferFor = async (restaurant: string) => {
   const restaurantData = {
     city: currentRestaurant.RESTAURANT_DATA.city,
     name: currentRestaurant.RESTAURANT_DATA.name,
-    uniqueId: uniqueId,
+    uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
   };
 
   // Stupid prisma
@@ -57,7 +49,7 @@ export const getCurrentOfferFor = async (restaurant: string) => {
     create: restaurantData,
     update: {},
     where: {
-      uniqueId: uniqueId,
+      uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
     },
   });
 
@@ -75,34 +67,19 @@ export const getCurrentOfferFor = async (restaurant: string) => {
     data: menuData,
   });
 
-  const newCurrentOffer = await getOfferFromTo(
-    uniqueId,
-    thisWeekStartDate,
-    thisWeekEndDate
-  );
-
-  return newCurrentOffer;
+  return { message: 'Offer updated' };
 };
 
-export const getCurrentWeekDates = (): { monday: Date; sunday: Date } => {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // adjust when Sunday
-
-  const monday = new Date(today.setDate(diff));
-  const sunday = new Date(today.setDate(diff + 6));
-
-  // Reset time to 00:00:00 for both Monday and Sunday
-  monday.setHours(0, 0, 0, 0);
-  sunday.setHours(0, 0, 0, 0);
-
-  return { monday, sunday };
-};
-
+/**
+ *
+ * @param uniqueId uniqueId of the restaurant
+ * @param {Date} [from=dayjs().startOf('week').toDate()] - default is the start of the week
+ * @param {Date} [to=dayjs().endOf('week').toDate()] - default is the end of the week
+ */
 export const getOfferFromTo = async (
-  restaurantId: string,
-  from: Date,
-  to: Date
+  uniqueId: string,
+  from: Date = dayjs().startOf('week').toDate(),
+  to: Date = dayjs().endOf('week').toDate()
 ) => {
   logger.info(`Getting offer from ${from} to ${to}`);
   return await prismaClient.menu.findMany({
@@ -120,9 +97,13 @@ export const getOfferFromTo = async (
       },
       AND: {
         Restaurant: {
-          uniqueId: restaurantId,
+          uniqueId,
         },
       },
     },
   });
 };
+
+export type MenuWithFoodNameAndRestaurant = Prisma.PromiseReturnType<
+  typeof getOfferFromTo
+>;

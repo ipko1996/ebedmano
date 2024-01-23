@@ -3,14 +3,10 @@ import dayjs from 'dayjs';
 import('dayjs/locale/hu');
 import { prismaClient } from '@ebedmano/kitchenware';
 import { logger } from '@ebedmano/kitchenware';
-import { getCurrentOfferFor } from '@ebedmano/recipes';
+import { getOfferFromTo } from '@ebedmano/recipes';
 
 export const deliveryFor = async (restaurant: string) => {
-  const offer = await getCurrentOfferFor(restaurant);
-  if (typeof offer === 'string') {
-    logger.info(offer);
-    return;
-  }
+  const offer = await getOfferFromTo(restaurant);
 
   //logger.info(offer);
 
