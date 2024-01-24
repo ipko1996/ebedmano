@@ -1,5 +1,4 @@
 import { CronJob } from 'cron';
-import { getCurrentOfferFor } from '@ebedmano/recipes';
 import { deliveryFor } from '@ebedmano/delivery';
 
 /**
@@ -9,20 +8,18 @@ import { deliveryFor } from '@ebedmano/delivery';
  * This will call a function which will decide
  * if it has to start looking for a new offer
  */
-// const job = new CronJob(
-//   '* * * * * *', // cronTime
-//   function () {
-//     console.log('You will see this message every second');
-//   }, // onTick
-//   null, // onComplete
-//   true, // start
-//   'America/Los_Angeles' // timeZone
-// );
+const job = new CronJob(
+  '* * * * *', // cronTime
+  async function () {
+    await deliveryFor('VESZ_ZONA');
+  }, // onTick
+  null, // onComplete
+  true // start
+);
 
-// job.start();
-
-(async () => {
-  // const asd = await getCurrentOfferFor('VESZ_ZONA');
-  // console.log(asd);
-  await deliveryFor('VESZ_ZONA');
+(() => {
+  job.start();
 })();
+
+// Get all restaurants
+// Start cron job for each restaurant

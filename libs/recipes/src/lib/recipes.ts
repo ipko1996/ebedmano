@@ -9,8 +9,27 @@ import { IWaiter } from '../staff';
  * @param currentRestaurant
  */
 export const updateOfferFor = async (currentRestaurant: IWaiter) => {
-  const thisWeekStartDate = dayjs().startOf('week').toDate();
-  const offer = await currentRestaurant.getCurrentOffer(thisWeekStartDate);
+  const restaurantData = {
+    city: currentRestaurant.RESTAURANT_DATA.city,
+    name: currentRestaurant.RESTAURANT_DATA.name,
+    uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
+  };
+
+  const createdRestaurant = await prismaClient.restaurant.upsert({
+    create: restaurantData,
+    update: {},
+    where: {
+      uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
+    },
+  });
+  // If createdRestaurant is updated this week we should return
+  if (
+    createdRestaurant.lastUpdate &&
+    dayjs(createdRestaurant.lastUpdate).isAfter(dayjs().startOf('week'))
+  )
+    return { message: 'Offer already updated', updated: false };
+
+  const offer = await currentRestaurant.getCurrentOffer();
 
   if (!offer.succsess) {
     // Error happened while fetching
@@ -20,17 +39,23 @@ export const updateOfferFor = async (currentRestaurant: IWaiter) => {
     return {
       message: 'Fetching failed',
       error: offer.message || 'Unknown error',
+      updated: false,
     };
   }
+
+  // Update lastUpdate
+  await prismaClient.restaurant.update({
+    where: {
+      uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
+    },
+    data: {
+      lastUpdate: new Date(),
+    },
+  });
 
   const foodNameData = offer.offers.map((offerItem) => ({
     name: offerItem.foodName,
   }));
-  const restaurantData = {
-    city: currentRestaurant.RESTAURANT_DATA.city,
-    name: currentRestaurant.RESTAURANT_DATA.name,
-    uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
-  };
 
   // Stupid prisma
   await prismaClient.foodName.createMany({
@@ -42,14 +67,6 @@ export const updateOfferFor = async (currentRestaurant: IWaiter) => {
       name: {
         in: foodNameData.map((food) => food.name),
       },
-    },
-  });
-
-  const createdRestaurant = await prismaClient.restaurant.upsert({
-    create: restaurantData,
-    update: {},
-    where: {
-      uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
     },
   });
 
@@ -67,7 +84,7 @@ export const updateOfferFor = async (currentRestaurant: IWaiter) => {
     data: menuData,
   });
 
-  return { message: 'Offer updated' };
+  return { message: 'Offer updated', updated: true };
 };
 
 /**

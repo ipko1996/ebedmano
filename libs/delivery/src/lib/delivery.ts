@@ -3,12 +3,25 @@ import dayjs from 'dayjs';
 import('dayjs/locale/hu');
 import { prismaClient } from '@ebedmano/kitchenware';
 import { logger } from '@ebedmano/kitchenware';
-import { getOfferFromTo } from '@ebedmano/recipes';
+import {
+  RESTAURANT,
+  getOfferFromTo,
+  toEventMapFor,
+  updateOfferFor,
+} from '@ebedmano/recipes';
 
-export const deliveryFor = async (restaurant: string) => {
-  const offer = await getOfferFromTo(restaurant);
+export const deliveryFor = async (restaurantStr: string) => {
+  const restaurant = toEventMapFor(restaurantStr as RESTAURANT);
+  if (typeof restaurant === 'string') throw new Error('Restaurant not found');
 
-  //logger.info(offer);
+  // Check if restaurant updated
+  const { updated } = await updateOfferFor(restaurant);
+  if (!updated) {
+    logger.info(`Offer already updated for ${restaurant.RESTAURANT_DATA.name}`);
+    return;
+  }
+
+  const offer = await getOfferFromTo(restaurant.RESTAURANT_DATA.uniqueId);
 
   // Get all subscribed users for this restaurant
   const subs = await prismaClient.subscription.findMany({
@@ -21,7 +34,7 @@ export const deliveryFor = async (restaurant: string) => {
   });
 
   // Build text
-  let text = `This week's offer for ${offer[0].Restaurant.name}:\n\n`;
+  let text = `This week's offer for ${restaurant.RESTAURANT_DATA.name}:\n\n`;
   let day = dayjs(offer[0].date).locale('hu').format('dddd');
   text += `${day.toUpperCase()}\n`;
   text += offer.reduce((acc, curr) => {

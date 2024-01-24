@@ -22,9 +22,3 @@ menuRoutes.get('/:id', async (req: Request, res: Response) => {
   else
     return res.status(404).send({ message: 'No offer found, try updating...' });
 });
-
-menuRoutes.get('/szia', async (req: Request, res: Response) => {
-  // const rest = await prisma.restaurant.create({ data: { name: 'Zona' } });
-  // console.log(rest);
-  res.send({ message: 'Szia' });
-});

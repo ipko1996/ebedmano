@@ -11,13 +11,13 @@ datasource db {
 }
 
 model Restaurant {
-  restaurantId   Int            @id @default(autoincrement())
-  name           String
-  uniqueId       String         @unique
-  city           String
-  lastPostedDate DateTime?
-  Menus          Menu[]
-  Subscription   Subscription[]
+  restaurantId Int            @id @default(autoincrement())
+  name         String
+  uniqueId     String         @unique
+  city         String
+  lastUpdate   DateTime?
+  Menus        Menu[]
+  Subscription Subscription[]
 }
 
 model Menu {
