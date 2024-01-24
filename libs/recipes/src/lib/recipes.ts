@@ -43,16 +43,6 @@ export const updateOfferFor = async (currentRestaurant: IWaiter) => {
     };
   }
 
-  // Update lastUpdate
-  await prismaClient.restaurant.update({
-    where: {
-      uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
-    },
-    data: {
-      lastUpdate: new Date(),
-    },
-  });
-
   const foodNameData = offer.offers.map((offerItem) => ({
     name: offerItem.foodName,
   }));
@@ -82,6 +72,16 @@ export const updateOfferFor = async (currentRestaurant: IWaiter) => {
 
   await prismaClient.menu.createMany({
     data: menuData,
+  });
+
+  // Update lastUpdate
+  await prismaClient.restaurant.update({
+    where: {
+      uniqueId: currentRestaurant.RESTAURANT_DATA.uniqueId,
+    },
+    data: {
+      lastUpdate: new Date(),
+    },
   });
 
   return { message: 'Offer updated', updated: true };
