@@ -47,6 +47,10 @@
       "options": {
         "jestConfig": "apps/feedex/jest.config.ts"
       }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/feedex/Dockerfile . -t feedex"
     }
   },
   "tags": []

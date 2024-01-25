@@ -63,6 +63,10 @@
       "options": {
         "jestConfig": "apps/farmer/jest.config.ts"
       }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/farmer/Dockerfile . -t farmer"
     }
   },
   "tags": []

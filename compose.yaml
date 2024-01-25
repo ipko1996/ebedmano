@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_USER: postgres
+      POSTGRES_DB: mydb
+    ports:
+      - '5432:5432'
+  selinium:
+    image: selenium/standalone-chrome
+    shm_size: 512M
+    ports:
+      - '4444:4444'
+      - '7900:7900'
+  # feedex:
+  #   build: ./feedex
+  #   dockerfile: Dockerfile
+  #   depends_on:
+  #     - postgres
+  #     - selinium
+  # farmer:
+  #   build: ./farmer
+  #   dockerfile: Dockerfile
+  #   depends_on:
+  #     - postgres
+  #     - selinium
