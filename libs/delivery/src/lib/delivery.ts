@@ -1,6 +1,6 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
-import('dayjs/locale/hu');
+import 'dayjs/locale/hu';
 import { prismaClient } from '@ebedmano/kitchenware';
 import { logger } from '@ebedmano/kitchenware';
 import {
@@ -15,11 +15,11 @@ export const deliveryFor = async (restaurantStr: string) => {
   if (typeof restaurant === 'string') throw new Error('Restaurant not found');
 
   // Check if restaurant updated
-  const { updated } = await updateOfferFor(restaurant);
-  if (!updated) {
-    logger.info(`Offer already updated for ${restaurant.RESTAURANT_DATA.name}`);
-    return;
-  }
+  // const { updated } = await updateOfferFor(restaurant);
+  // if (!updated) {
+  //   logger.info(`Offer already updated for ${restaurant.RESTAURANT_DATA.name}`);
+  //   return;
+  // }
 
   const offer = await getOfferFromTo(restaurant.RESTAURANT_DATA.uniqueId);
 

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import {
-  MenuWithFoodNameAndRestaurant,
+  // MenuWithFoodNameAndRestaurant,
   RESTAURANT,
   getOfferFromTo,
   toEventMapFor,
@@ -15,7 +15,7 @@ menuRoutes.get('/:id', async (req: Request, res: Response) => {
   if (typeof currentRestaurant === 'string')
     return res.status(404).send({ message: 'Restaurant not found' });
 
-  const result: MenuWithFoodNameAndRestaurant = await getOfferFromTo(
+  const result = await getOfferFromTo(
     currentRestaurant.RESTAURANT_DATA.uniqueId
   );
   if (result.length > 0) return res.send(result);

@@ -13,15 +13,12 @@ services:
     ports:
       - '4444:4444'
       - '7900:7900'
-  # feedex:
-  #   build: ./feedex
-  #   dockerfile: Dockerfile
-  #   depends_on:
-  #     - postgres
-  #     - selinium
-  # farmer:
-  #   build: ./farmer
-  #   dockerfile: Dockerfile
-  #   depends_on:
-  #     - postgres
-  #     - selinium
+  farmer:
+    build:
+      context: .
+      dockerfile: ./apps/farmer/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - selinium

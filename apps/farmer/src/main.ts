@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
 import { deliveryFor } from '@ebedmano/delivery';
-import { prismaClient } from '@ebedmano/kitchenware';
+import { prismaClient, connectToDb } from '@ebedmano/kitchenware';
 
 /**
  * Lets just call a function in every hour
@@ -21,7 +21,8 @@ const job = new CronJob(
   true // start
 );
 
-(() => {
+(async () => {
+  await connectToDb();
   job.start();
 })();
 

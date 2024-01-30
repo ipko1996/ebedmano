@@ -17,6 +17,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "strict": true,
+    "noImplicitAny": false,
     "paths": {
       "@ebedmano/delivery": ["libs/delivery/src/index.ts"],
       "@ebedmano/kitchenware": ["libs/kitchenware/src/index.ts"],

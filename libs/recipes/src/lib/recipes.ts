@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+// import { Prisma } from '@prisma/client';
 import { logger } from '@ebedmano/kitchenware';
 import { prismaClient } from '@ebedmano/kitchenware';
 import dayjs from 'dayjs';
@@ -121,6 +121,6 @@ export const getOfferFromTo = async (
   });
 };
 
-export type MenuWithFoodNameAndRestaurant = Prisma.PromiseReturnType<
-  typeof getOfferFromTo
->;
+// export type MenuWithFoodNameAndRestaurant = Prisma.PromiseReturnType<
+//   typeof getOfferFromTo
+// >;
