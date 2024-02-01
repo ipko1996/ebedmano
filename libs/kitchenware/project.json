@@ -11,7 +11,14 @@
         "outputPath": "dist/libs/kitchenware",
         "main": "libs/kitchenware/src/index.ts",
         "tsConfig": "libs/kitchenware/tsconfig.lib.json",
-        "assets": ["libs/kitchenware/*.md"]
+        "assets": [
+          "libs/kitchenware/*.md",
+          {
+            "glob": "**/*",
+            "input": "libs/kitchenware/src/lib/prisma/client",
+            "output": "src/lib/prisma/client"
+          }
+        ]
       }
     },
     "lint": {

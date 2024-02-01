@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
 import { deliveryFor } from '@ebedmano/delivery';
-import { prismaClient, connectToDb } from '@ebedmano/kitchenware';
+import { prismaClient, connectToDb, logger } from '@ebedmano/kitchenware';
 
 /**
  * Lets just call a function in every hour
@@ -13,6 +13,10 @@ const job = new CronJob(
   '* * * * *', // cronTime
   async function () {
     const restaurants = await prismaClient.restaurant.findMany();
+    if (restaurants.length === 0) {
+      logger.info('No restaurants found');
+      return;
+    }
     for (const restaurant of restaurants) {
       await deliveryFor(restaurant.uniqueId);
     }

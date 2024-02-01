@@ -12,7 +12,7 @@
         "platform": "node",
         "outputPath": "dist/apps/farmer",
         "format": ["cjs"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/farmer/src/main.ts",
         "tsConfig": "apps/farmer/tsconfig.app.json",
         "assets": ["apps/farmer/src/assets"],

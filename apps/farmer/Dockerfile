@@ -21,13 +21,9 @@ RUN pnpm install --frozen-lockfile --prefer-frozen-lockfile
 RUN pnpm dlx prisma generate
 RUN pnpm exec nx run farmer:build
 
-# copy generated prisma client to dist
-# RUN cp -r ./node_modules/.prisma ./dist/apps/
 
 
 WORKDIR /src/dist/apps/farmer
-
-RUN pnpm install --frozen-lockfile --prefer-frozen-lockfile
 
 EXPOSE 3001
 CMD [ "node", "main.js" ]
