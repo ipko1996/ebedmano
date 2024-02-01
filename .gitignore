@@ -46,4 +46,5 @@ env
 .env.*
 !.env.example
 
+# Generated prisma files
 libs/kitchenware/src/lib/prisma
