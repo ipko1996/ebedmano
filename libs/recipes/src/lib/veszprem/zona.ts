@@ -7,6 +7,12 @@ import { Offer, processImage } from '@ebedmano/kitchenware';
 import { google } from '@google-cloud/documentai/build/protos/protos';
 import { logger } from '@ebedmano/kitchenware';
 import dayjs from 'dayjs';
+import hu from 'dayjs/locale/hu';
+
+dayjs.locale({
+  ...hu,
+  weekStart: 1,
+});
 
 export const RESTAURANT_DATA = {
   name: 'Zona',
@@ -118,8 +124,9 @@ const getDateFromTo = (text: string) => {
 const getOffers = (text: string, lines: Lines) => {
   const { from } = getDateFromTo(text);
 
-  if (dayjs(from).isBefore(dayjs().startOf('week').toDate())) {
-    throw new Error('No new menu posted yet');
+  // Check if the menu is for the current week
+  if (dayjs(from).isAfter(dayjs().endOf('week'))) {
+    throw new Error('Menu is not for the current week');
   }
 
   let isMenu = false;

@@ -28,6 +28,7 @@ const job = new CronJob(
 (async () => {
   await connectToDb();
   job.start();
+  //await deliveryFor('VESZ_ZONA');
 })();
 
 // Get all restaurants

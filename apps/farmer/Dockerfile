@@ -18,10 +18,11 @@ COPY . .
 # RUN pnpm config set store-dir ./.pnpm-store
 # RUN --mount=type=cache,id=pnpm-store,target=./.pnpm-store
 RUN pnpm install --frozen-lockfile --prefer-frozen-lockfile
-RUN pnpm dlx prisma generate
+# RUN pnpm dlx prisma generate
+
+# RUN pnpm exec nx run workspace-extensions:seed
+
 RUN pnpm exec nx run farmer:build
-
-
 
 WORKDIR /src/dist/apps/farmer
 
