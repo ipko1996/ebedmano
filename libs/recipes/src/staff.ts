@@ -47,8 +47,8 @@ export type RESTAURANT = VESZPREM; //| KOSZEG;
  */
 export const veszprem = {
   ZONA: 'VESZ_ZONA',
-  METISZ: 'VESZ_METISZ',
-  MARICA: 'VESZ_MARICA',
+  //METISZ: 'VESZ_METISZ',
+  //MARICA: 'VESZ_MARICA',
 } as const;
 /**
  * We will use this for RESTAURANT type
@@ -73,8 +73,8 @@ type VESZPREM = typeof veszprem[keyof typeof veszprem];
  */
 export const restaurantNameToEventMap: RestaurantToEvent = {
   [veszprem.ZONA]: vesz.vesz_zona,
-  [veszprem.METISZ]: vesz.vesz_metisz,
-  [veszprem.MARICA]: vesz.vesz_marica,
+  //[veszprem.METISZ]: vesz.vesz_metisz,
+  //[veszprem.MARICA]: vesz.vesz_marica,
 };
 
 /**

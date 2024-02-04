@@ -24,6 +24,9 @@
       "options": {
         "jestConfig": "libs/workspace-extensions/jest.config.ts"
       }
+    },
+    "seed": {
+      "executor": "@ebedmano/workspace-extensions:prisma-seed"
     }
   },
   "tags": []
