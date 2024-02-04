@@ -1,0 +1,30 @@
+{
+  "name": "workspace-extensions",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/workspace-extensions/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/workspace-extensions",
+        "main": "libs/workspace-extensions/src/index.ts",
+        "tsConfig": "libs/workspace-extensions/tsconfig.lib.json",
+        "assets": ["libs/workspace-extensions/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/workspace-extensions/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

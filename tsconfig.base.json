@@ -24,7 +24,10 @@
       "@ebedmano/menu": ["libs/menu/src/index.ts"],
       "@ebedmano/recipes": ["libs/recipes/src/index.ts"],
       "@ebedmano/subscriptions": ["libs/subscriptions/src/index.ts"],
-      "@ebedmano/update": ["libs/update/src/index.ts"]
+      "@ebedmano/update": ["libs/update/src/index.ts"],
+      "@ebedmano/workspace-extensions": [
+        "libs/workspace-extensions/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
